@@ -30,8 +30,6 @@ const getCF = (List) => {
     List.forEach(element => {
         R += ((element.Rating-Ravg) * (element.Rating-Ravg))
     });
-    console.log(R)
-    console.log(V_2)
     R /= (N-1)
     V_2 /= N
     return Math.sqrt(R+ V_2)
@@ -41,25 +39,54 @@ const update = (prevRating,Ranklist) =>{
     const N = prevRating.length
     let r=1
     const cf = getCF(prevRating)
-    console.log(cf)
     prevRating.forEach(element => {
         const rwa = ((0.4 * element.TimesPlayed + 0.2)/(0.7 * element.TimesPlayed + 0.6))
         const vwa = ((0.5 * element.TimesPlayed + 0.8)/(element.TimesPlayed + 0.6))
-        List.push({TimesPlayed : (element.TimesPlayed + 1) , Rating : element.Rating , RollNumber : element.RollNumber , Volatility : element.Volatility ,ExpectedPerformance : getExpectedPerformance(N,getExpectedRank(element,prevRating)),ActualPerformance : (Math.log10(N/r-1) / Math.log10(4)),RatingWeight : rwa,VolatilityWeight : vwa})
+        List.push({
+                    TimesPlayed : (element.TimesPlayed + 1) , 
+                    Rating : element.Rating ,
+                    RollNumber : element.RollNumber ,
+                    Volatility : element.Volatility ,
+                    ExpectedPerformance : getExpectedPerformance(N,getExpectedRank(element,prevRating)),
+                    ActualPerformance : (Math.log10(N/(r-1)) / Math.log10(4)),
+                    RatingWeight : rwa,
+                    VolatilityWeight : vwa
+                })
         r+=1
     });
     console.log(List)
     List.forEach(element => {
-        const new_rating = element.Rating + (element.ActualPerformance - element.ExpectedPerformance) * cf * element.RatingWeight
+        let new_rating = element.Rating + (element.ActualPerformance - element.ExpectedPerformance) * cf * element.RatingWeight
         const num = element.VolatilityWeight * (new_rating - element.Rating) * (new_rating - element.Rating) + element.Volatility* element.Volatility
         const denom = element.VolatilityWeight + 1.1
-        const new_volatility = Math.sqrt(num/denom)
-        element.Rating = new_rating
-        element.Volatility = new_volatility
+        let new_volatility = Math.sqrt(num/denom)
+        const Ratingcap = 100 + (75/(element.TimesPlayed + 1)) + ( (100 * 500) / ((Math.abs(element.Rating - 1500)+1500)))
+        if(new_rating > element.Rating)
+        {
+            new_rating = Math.min( new_rating , Ratingcap + element.Rating)
+        }
+        else
+        {
+            new_rating = Math.max( new_rating , element.Rating - Ratingcap)
+        }
+        element.Rating = Math.ceil( new_rating )
+        if(new_volatility < 75)
+        {
+            new_volatility=75
+        }
+        if(new_volatility > 200)
+        {
+            new_volatility = 200
+        }
+        element.Volatility = Math.ceil( new_volatility )
     });
     ret = []
     List.forEach(element => {
-        ret.push({ RollNumber: element.RollNumber, Rating: element.Rating, Volatility: element.Volatility, TimesPlayed: element.TimesPlayed })
+        ret.push({  RollNumber: element.RollNumber,
+                    Rating: element.Rating, 
+                    Volatility: element.Volatility, 
+                    TimesPlayed: element.TimesPlayed
+                 })
     });
     return ret
 }
