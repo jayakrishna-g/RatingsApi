@@ -50,7 +50,7 @@ const update = (prevRating,Ranklist) =>{
     });
     console.log(List)
     List.forEach(element => {
-        const new_rating = element.rating + (element.ActualPerformance - element.ExpectedPerformance) * cf * element.RatingWeight
+        const new_rating = element.Rating + (element.ActualPerformance - element.ExpectedPerformance) * cf * element.RatingWeight
         const num = element.VolatilityWeight * (new_rating - element.Rating) * (new_rating - element.Rating) + element.Volatility* element.Volatility
         const denom = element.VolatilityWeight + 1.1
         const new_volatility = Math.sqrt(num/denom)
