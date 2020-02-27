@@ -41,7 +41,9 @@ const update = (prevRating, Ranklist) => {
         prevRating.push({ RollNumber: 0, Rating: 1500, Volatility: 125, TimesPlayed: 0 })
     }
     const N = prevRating.length
-    let r = 1
+    let pr = Ranklist[0].Rank;
+    let r=1;
+    let i=0
     const cf = getCF(prevRating)
     prevRating.forEach(element => {
         const rwa = ((0.4 * element.TimesPlayed + 0.2) / (0.7 * element.TimesPlayed + 0.6))
@@ -56,7 +58,12 @@ const update = (prevRating, Ranklist) => {
             RatingWeight: rwa,
             VolatilityWeight: vwa
         })
-        r += 1
+        if(pr != Ranklist[i].Rank)
+        {
+            r+=1
+            pr=Ranklist[i].Rank
+        }
+        i+=1
     });
     console.log(List)
     List.forEach(element => {

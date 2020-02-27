@@ -5,9 +5,10 @@ const CCRankList = async function (result, url) {
     let page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
     await page.setRequestInterception(true);
+    page.waitForNavigation( { timeout: 60000, waitUntil: 'domcontentloaded' });
 
     page.on('request', (req) => {
-        if (req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image') {
+        if (  req.resourceType() == 'image') {
             req.abort();
         }
         else {
@@ -17,8 +18,15 @@ const CCRankList = async function (result, url) {
 
     await page.goto(url);
     const data = await page.evaluate(() => {
-        const tds = Array.from(document.querySelectorAll('.user-name'));
-        return tds.map(td => td.innerText.substring(2));
+        let tds = Array.from(document.querySelectorAll('.leaderboard-list-view'));
+        console.log(tds)
+        let ret=[];
+        for(let i=0;i<tds.length;i++)
+        {
+            arr=tds[i].innerText.split('\n')
+            ret.push({RollNumber : arr[2] , Rank : arr[0]})
+        }
+        return ret;
     });
     result.ranklist = data;
     await page.close();
