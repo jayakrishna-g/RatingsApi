@@ -22,8 +22,8 @@ module.exports.work = (obj,callback) => {
   else if(config.contest_site == "Hackerrank")
   {
     hackerrank.work((err,prevRating,Leaderboard) => {
-      console.log(update.update(prevRating,Leaderboard))
-      callback(err,prevRating);
+      let currRating = update.update(prevRating,Leaderboard)
+      callback(err,currRating);
     })
   }
 }
