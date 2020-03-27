@@ -23,7 +23,6 @@ module.exports.work = (obj,callback) => {
   {
     hackerrank.work((err,prevRating,Leaderboard) => {
       let currRating = update.update(prevRating,Leaderboard)
-      console.log(prevRating)
       let i=0;
       currRating.forEach(element => {
         prevRating[i].Rating = element.Rating
@@ -31,16 +30,15 @@ module.exports.work = (obj,callback) => {
         prevRating[i].TimesPlayed = element.TimesPlayed
         i+=1
       });
-      console.log(prevRating)
       async.each(prevRating, (element,next)=> {
         db.updatePlayer(element , (err , res) => {
           next();
-        }),
+        })},
         (err) => {
           console.log(prevRating)
           callback(err,prevRating);
         }
-      })
+      )
     })
   }
 }
