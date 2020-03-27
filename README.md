@@ -1,2 +1,2 @@
-# RatingsApi
-Ratings API for coding club
+# CP RatingsCalculator API
+Custom Ratings API for Competetive Programming 

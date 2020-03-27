@@ -1,38 +1,22 @@
-const puppeteer = require('puppeteer');
+const async = require('async')
+const axios = require('axios')
 
-const CCRankList = async function (result, url) {
-    let browser = await puppeteer.launch({ headless: false });
-    let page = await browser.newPage();
-    await page.setViewport({ width: 1920, height: 1080 });
-    await page.setRequestInterception(true);
-    page.waitForNavigation( { timeout: 60000, waitUntil: 'domcontentloaded' });
 
-    page.on('request', (req) => {
-        if (  req.resourceType() == 'image') {
-            req.abort();
-        }
-        else {
-            req.continue();
-        }
-    });
-
-    await page.goto(url);
-    const data = await page.evaluate(() => {
-        let tds = Array.from(document.querySelectorAll('.leaderboard-list-view'));
-        console.log(tds)
-        let ret=[];
-        for(let i=0;i<tds.length;i++)
-        {
-            arr=tds[i].innerText.split('\n')
-            ret.push({RollNumber : arr[2] , Rank : arr[0]})
-        }
-        return ret;
-    });
-    result.ranklist = data;
-    await page.close();
-    await browser.close();
-}
-
-module.exports = {
-    getRanklist: CCRankList
+module.exports.getLeaderBoard = (name,num_of_Pages,callback) => {
+    let url='https://www.hackerrank.com/rest/contests/'+name+'/leaderboard/?offset='
+    let num_pages=[]
+    for(let i=0;i<num_of_Pages;i++)
+    {
+        num_pages.push(i*10)
+    }
+    async.concat(num_pages ,  function(offset,net)  {
+         axios.get(url+offset+'&limit=10').then(result => {
+            net(null,result.data.models)
+        }).catch(err => {
+            console.log(err)
+            net(err)
+        })
+    } 
+    ,callback
+);
 }
