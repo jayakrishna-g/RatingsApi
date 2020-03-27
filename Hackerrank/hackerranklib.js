@@ -13,25 +13,23 @@ module.exports.work = function (callback) {
     Scrapper.getLeaderBoard(name, num_pages, (err, leaderboard) => {
         console.log(leaderboard)
         async.concat(leaderboard, (player, next) => {
-            console.log(player)
             db.getSinglePlayerDetails({HackerrankHandle : player.hacker}, (err, result) => {
                 if(result)
                 next(err,[result])
                 else
-                next(err,[])
+                {
+                    db.addPlayer({RollNumber : player.hacker,HackerrankHandle : player.hacker , Rating : 1500 , Volatility : 125 , TimesPlayed : 0} , (err, resp) => {
+                        next(err,[resp])
+                    });
+                }
             })
         },
-            (err,result) => {
-                console.log(res)
-                res.forEach(element => {
-                    if(element.Rank != prank)
-                    {
-                        prank = element.Rank;
-                        crank+=1;
-                    }
-                    element.Rank=crank
+            (err,res) => {
+                let rank = []
+                leaderboard.forEach(element => {
+                    rank.push({Name : element.hacker , Rank : element.rank})
                 });
-                callback(err,result,leaderboard)
+                callback(err,res,rank)
             }
         )
     })

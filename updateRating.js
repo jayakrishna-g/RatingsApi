@@ -36,12 +36,14 @@ const getCF = (List) => {
 const update = (prevRating, Ranklist) => {
     List = []
     base_case = false
+    console.log(prevRating)
     if (prevRating.length == 1) {
         base_case = true
         prevRating.push({ RollNumber: 0, Rating: 1500, Volatility: 125, TimesPlayed: 0 })
     }
     const N = prevRating.length
     let pr = Ranklist[0].Rank;
+    console.log(Ranklist)
     let r=1;
     let i=0
     const cf = getCF(prevRating)
@@ -54,7 +56,7 @@ const update = (prevRating, Ranklist) => {
             RollNumber: element.RollNumber,
             Volatility: element.Volatility,
             ExpectedPerformance: getExpectedPerformance(N, getExpectedRank(element, prevRating)),
-            ActualPerformance: (Math.log10(N / (r - 1)) / Math.log10(4)),
+            ActualPerformance: (Math.log10(N / (Ranklist[i].Rank - 1)) / Math.log10(4)),
             RatingWeight: rwa,
             VolatilityWeight: vwa
         })

@@ -3,31 +3,45 @@ html(lang='en')
   head
     // Required meta tags
     meta(charset='utf-8')
+    |     
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
     // Bootstrap CSS
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
+    |     
     title Custom Ratingcalculator
+  |   
   body
     .col-sm-9
-      form#form1
+      form#form1(method='POST')
         .form-group
           label(for='leaderboard') LearderBoard URL
-          input.form-control(type='text', name='leaderboard', placeholder='Leaderboard URL', required='')
+          |           
+          input.form-control(type='text', name='leaderboardurl', placeholder='Leaderboard URL', required='')
+        |         
         .form-group
           label(for='no_pages') Enter Number OF Pages in LearderBoard
+          |           
           input.form-control(type='test', name='no_pages', placeholder='Number Of Pages', required='')
+        |         
         .form-group
           label(for='contest_site') Contest Site
+          |           
           select.form-control(name='contest_site')
             option Hackerrank
+            |             
             option Codechef
+        |         
         .form-group
           label(for='dburl') DataBase URL
+          |           
           input.form-control(type='text', name='dburl', placeholder='DataBase URL', required='')
+        |         
         button.btn.btn-primary(type='submit') Submit
-    script(src='vendor/jquery/jquery.min.js')
-    script(src='vendor/bootstrap/js/bootstrap.bundle.min.js')
+    |   
+    script(src='../vendor/jquery/jquery.min.js')
+    |   
+    script(src='../vendor/bootstrap/js/bootstrap.bundle.min.js')
     // Core plugin JavaScript
-    script(src='vendor/jquery-easing/jquery.easing.min.js')
+    script(src='../vendor/jquery-easing/jquery.easing.min.js')
     // Custom scripts for all pages
-    script(src='js/page1.js')
+    script(src='../js/page1.js')
