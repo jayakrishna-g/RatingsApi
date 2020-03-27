@@ -1,6 +1,6 @@
 const hackerrank = require('./Hackerrank/hackerranklib')
 const codechef = require('./Codechef/codechef')
-const playerLib = require('./db/lib/player')
+const db = require('./db/lib/player')
 const async = require('async')
 const config = require('./db/config')
 const update = require('./updateRating')
@@ -23,7 +23,24 @@ module.exports.work = (obj,callback) => {
   {
     hackerrank.work((err,prevRating,Leaderboard) => {
       let currRating = update.update(prevRating,Leaderboard)
-      callback(err,currRating);
+      console.log(prevRating)
+      let i=0;
+      currRating.forEach(element => {
+        prevRating[i].Rating = element.Rating
+        prevRating[i].Volatility = element.Volatility
+        prevRating[i].TimesPlayed = element.TimesPlayed
+        i+=1
+      });
+      console.log(prevRating)
+      async.each(prevRating, (element,next)=> {
+        db.updatePlayer(element , (err , res) => {
+          next();
+        }),
+        (err) => {
+          console.log(prevRating)
+          callback(err,prevRating);
+        }
+      })
     })
   }
 }

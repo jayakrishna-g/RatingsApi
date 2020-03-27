@@ -9,7 +9,6 @@ module.exports.addPlayer = (playerDetails , callback) => {
 }
 
 module.exports.updatePlayer = (playerDetails , callback) => {
-
     playerModel.findById(playerDetails._id , function (err,player) {
         if(playerDetails._id)
         {
